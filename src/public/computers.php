@@ -145,6 +145,10 @@ $computers = get_computers($filters);
                                 onsubmit="return confirm('Are you sure you want to delete this computer?');">
                                 <input type="hidden" name="action" value="delete">
                                 <input type="hidden" name="id" value="<?php echo $pc['id']; ?>">
+                                <a href="edit_computer.php?id=<?php echo $pc['id']; ?>" style="text-decoration:none;">
+                                    <button type="button"
+                                        style="background-color: #ffc107; color: black; padding: 5px 10px; border:none; cursor:pointer; margin-right: 5px;">Edit</button>
+                                </a>
                                 <button type="submit"
                                     style="background-color: #dc3545; color: white; padding: 5px 10px; border:none; cursor:pointer;">X</button>
                             </form>

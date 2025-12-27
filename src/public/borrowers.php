@@ -68,6 +68,7 @@ $borrowers = get_borrowers();
                         <th>Email</th>
                         <th>Site</th>
                         <th>Referrer</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -78,6 +79,12 @@ $borrowers = get_borrowers();
                             <td><?php echo htmlspecialchars($b['email']); ?></td>
                             <td><?php echo htmlspecialchars($b['site']); ?></td>
                             <td><?php echo htmlspecialchars($b['referrer'] ?? '-'); ?></td>
+                            <td>
+                                <a href="edit_borrower.php?id=<?php echo $b['id']; ?>">
+                                    <button
+                                        style="background-color: #ffc107; color: black; padding: 5px 10px; border:none; cursor:pointer;">Edit</button>
+                                </a>
+                            </td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -107,7 +114,7 @@ $borrowers = get_borrowers();
                 .then(data => {
                     tbody.innerHTML = '';
                     if (data.length === 0) {
-                        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No borrowers found</td></tr>';
+                        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">No borrowers found</td></tr>';
                         return;
                     }
                     data.forEach(b => {
@@ -123,6 +130,11 @@ $borrowers = get_borrowers();
                             <td>${escapeHtml(email)}</td>
                             <td>${escapeHtml(site)}</td>
                             <td>${escapeHtml(referrer)}</td>
+                            <td>
+                                <a href="edit_borrower.php?id=${b.id}">
+                                    <button style="background-color: #ffc107; color: black; padding: 5px 10px; border:none; cursor:pointer;">Edit</button>
+                                </a>
+                            </td>
                         </tr>`;
                         tbody.innerHTML += html;
                     });

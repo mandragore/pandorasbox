@@ -65,6 +65,15 @@ function get_computers($filters = [])
     return $result->fetch_all(MYSQLI_ASSOC);
 }
 
+function get_computer_by_id($id)
+{
+    global $conn;
+    $stmt = $conn->prepare("SELECT * FROM computers WHERE id = ?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_assoc();
+}
+
 function get_borrowers($search = '')
 {
     global $conn;
@@ -78,6 +87,15 @@ function get_borrowers($search = '')
         $result = $conn->query("SELECT * FROM borrowers ORDER BY name");
     }
     return $result->fetch_all(MYSQLI_ASSOC);
+}
+
+function get_borrower_by_id($id)
+{
+    global $conn;
+    $stmt = $conn->prepare("SELECT * FROM borrowers WHERE id = ?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_assoc();
 }
 
 function get_late_loans()
