@@ -52,10 +52,18 @@ function get_computers($filters = [])
     if (isset($filters['available_start']) && isset($filters['available_end'])) {
         $start = $filters['available_start'];
         $end = $filters['available_end'];
+
+        $exclude_self = "";
+        if (isset($filters['ignore_loan_id'])) {
+            $lid = (int) $filters['ignore_loan_id'];
+            $exclude_self = " AND id != $lid";
+        }
+
         $sql .= " AND id NOT IN (
             SELECT computer_id FROM loans 
             WHERE (start_date <= '$end' AND end_date >= '$start') 
             AND is_returned = 0
+            $exclude_self
         )";
     }
 
@@ -147,14 +155,14 @@ function get_allocation_matrix($year)
 
         $start_week = (int) date('W', strtotime($loan['start_date']));
         $end_week = (int) date('W', strtotime($loan['end_date']));
-        $year_of_start = (int) date('Y', strtotime($loan['start_date']));
-        $year_of_end = (int) date('Y', strtotime($loan['end_date']));
+        $year_of_start = (int) date('o', strtotime($loan['start_date']));
+        $year_of_end = (int) date('o', strtotime($loan['end_date']));
 
         // Simple handling for loans crossing years: wrap to edges
         if ($year_of_start < $year)
             $start_week = 1;
         if ($year_of_end > $year)
-            $end_week = 52;
+            $end_week = 53; // Use 53 to cover full year if needed, or 52
 
         for ($w = $start_week; $w <= $end_week; $w++) {
             if ($w >= 1 && $w <= 52) {

@@ -112,7 +112,20 @@ $loans = $conn->query("SELECT l.*, c.name, b.name as borrower_name FROM loans l
     JOIN computers c ON l.computer_id = c.id 
     LEFT JOIN borrowers b ON l.borrower_id = b.id
     WHERE l.is_returned = 0 ORDER BY l.start_date DESC")->fetch_all(MYSQLI_ASSOC);
-$computers = get_computers();
+$filters = [];
+if (isset($_GET['start_date']) && !empty($_GET['start_date']))
+    $filters['available_start'] = $_GET['start_date'];
+if (isset($_GET['end_date']) && !empty($_GET['end_date']))
+    $filters['available_end'] = $_GET['end_date'];
+
+// Context: If editing, ignore the current loan so the machine is still "available" for itself
+if (isset($_GET['edit_id'])) {
+    $filters['ignore_loan_id'] = $_GET['edit_id'];
+} elseif ($edit_loan) {
+    $filters['ignore_loan_id'] = $edit_loan['id'];
+}
+
+$computers = get_computers($filters);
 $borrowers = get_borrowers();
 ?>
 <!DOCTYPE html>
@@ -150,48 +163,21 @@ $borrowers = get_borrowers();
                     <input type="hidden" name="loan_id" value="<?php echo $edit_loan['id']; ?>">
                 <?php endif; ?>
 
-                <div style="margin-bottom: 10px;">
-                    <label>Borrower:</label><br>
-                    <select name="borrower_id" required>
-                        <option value="">-- Select Borrower --</option>
-                        <?php foreach ($borrowers as $b):
-                            $selected = ($edit_loan && $edit_loan['borrower_id'] == $b['id']) ? 'selected' : '';
-                            ?>
-                            <option value="<?php echo $b['id']; ?>" <?php echo $selected; ?>><?php echo $b['name']; ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-                <div style="margin-bottom: 10px;">
-                    <label>Computer:</label><br>
-                    <select name="computer_id" style="width: 100%;">
-                        <?php
-                        $pre_comp = $_GET['computer_id'] ?? null;
-                        foreach ($computers as $pc):
-                            $selected = ($edit_loan && $edit_loan['computer_id'] == $pc['id']) || (!$edit_loan && $pre_comp == $pc['id']) ? 'selected' : '';
-                            ?>
-                            <option value="<?php echo $pc['id']; ?>" <?php echo $selected; ?>><?php echo $pc['name']; ?>
-                                (<?php echo $pc['processor']; ?>)</option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-
-                <hr style="border-color: var(--border-color); margin: 20px 0;">
                 <h4>Timing (Select Dates)</h4>
 
-                <div style="display:flex; gap: 10px;">
+                <div style="display:flex; gap: 10px; margin-bottom: 20px;">
                     <div style="flex:1">
                         <label>Start Date: <span id="start_week_display"
                                 style="font-weight:normal; color:#666; font-size:0.85em;"></span></label>
                         <input type="date" name="start_date" id="start_date"
-                            value="<?php echo $edit_loan ? $edit_loan['start_date'] : ($_GET['start_date'] ?? ''); ?>"
+                            value="<?php echo $_GET['start_date'] ?? ($edit_loan ? $edit_loan['start_date'] : ''); ?>"
                             required>
                     </div>
                     <div style="flex:1">
                         <label>End Date: <span id="end_week_display"
                                 style="font-weight:normal; color:#666; font-size:0.85em;"></span></label>
                         <input type="date" name="end_date" id="end_date"
-                            value="<?php echo $edit_loan ? $edit_loan['end_date'] : ($_GET['end_date'] ?? ''); ?>"
+                            value="<?php echo $_GET['end_date'] ?? ($edit_loan ? $edit_loan['end_date'] : ''); ?>"
                             required>
                     </div>
                 </div>
@@ -217,13 +203,70 @@ $borrowers = get_borrowers();
                         }
                     }
 
-                    document.getElementById('start_date').addEventListener('change', () => updateWeekDisplay('start_date', 'start_week_display'));
-                    document.getElementById('end_date').addEventListener('change', () => updateWeekDisplay('end_date', 'end_week_display'));
+                    function checkDates() {
+                        const start = document.getElementById('start_date').value;
+                        const end = document.getElementById('end_date').value;
 
-                    // Initial run
-                    updateWeekDisplay('start_date', 'start_week_display');
-                    updateWeekDisplay('end_date', 'end_week_display');
+                        // Get current params to see if we need to reload
+                        const urlParams = new URLSearchParams(window.location.search);
+                        const currentStart = urlParams.get('start_date');
+                        const currentEnd = urlParams.get('end_date');
+
+                        if (start && end && (start !== currentStart || end !== currentEnd)) {
+                            // Reload with new params
+                            urlParams.set('start_date', start);
+                            urlParams.set('end_date', end);
+                            window.location.search = urlParams.toString();
+                        }
+                    }
+
+                    document.addEventListener('DOMContentLoaded', () => {
+                        const startInput = document.getElementById('start_date');
+                        const endInput = document.getElementById('end_date');
+
+                        startInput.addEventListener('change', () => {
+                            updateWeekDisplay('start_date', 'start_week_display');
+                            checkDates();
+                        });
+                        endInput.addEventListener('change', () => {
+                            updateWeekDisplay('end_date', 'end_week_display');
+                            checkDates();
+                        });
+
+                        // Initial run
+                        updateWeekDisplay('start_date', 'start_week_display');
+                        updateWeekDisplay('end_date', 'end_week_display');
+                    });
                 </script>
+
+                <div style="margin-bottom: 10px;">
+                    <label>Borrower:</label><br>
+                    <select name="borrower_id" required>
+                        <option value="">-- Select Borrower --</option>
+                        <?php foreach ($borrowers as $b):
+                            $selected = ($edit_loan && $edit_loan['borrower_id'] == $b['id']) ? 'selected' : '';
+                            ?>
+                            <option value="<?php echo $b['id']; ?>" <?php echo $selected; ?>><?php echo $b['name']; ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <label>Computer:</label><br>
+                    <select name="computer_id" style="width: 100%;" required>
+                        <option value="">-- Select Computer --</option>
+                        <?php
+                        $pre_comp = $_GET['computer_id'] ?? null;
+                        foreach ($computers as $pc):
+                            $selected = ($edit_loan && $edit_loan['computer_id'] == $pc['id']) || (!$edit_loan && $pre_comp == $pc['id']) ? 'selected' : '';
+                            ?>
+                            <option value="<?php echo $pc['id']; ?>" <?php echo $selected; ?>><?php echo $pc['name']; ?>
+                                (<?php echo $pc['processor']; ?>)</option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
+                <hr style="border-color: var(--border-color); margin: 20px 0;">
 
                 <div style="margin-top: 20px; display: flex; gap: 10px;">
                     <button type="submit"
