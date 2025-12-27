@@ -100,7 +100,8 @@ $available_count = $total_pcs - $active_count;
                                     $is_end = false;
                                     if ($cell) {
                                         $next_w = $w + 1;
-                                        $is_end = (!isset($pc['weeks'][$next_w]) || $pc['weeks'][$next_w]['id'] !== $cell['id']);
+                                        $next_cell = $pc['weeks'][$next_w] ?? null;
+                                        $is_end = ($next_cell === null || $next_cell['id'] !== $cell['id']);
 
                                         $content = "<a href='loans.php?edit_id=" . $cell['id'] . "' style='display:block; width:100%; height:100%; min-height:20px;' title='" . $title . "'>&nbsp;</a>";
 
