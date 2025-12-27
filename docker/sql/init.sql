@@ -4,7 +4,8 @@ CREATE TABLE computers (
     processor VARCHAR(255),
     ram VARCHAR(50),
     purchase_date DATE,
-    status ENUM('available', 'maintenance', 'retired') DEFAULT 'available'
+    status ENUM('available', 'maintenance', 'retired') DEFAULT 'available',
+    deleted_at DATETIME NULL DEFAULT NULL
 );
 
 CREATE TABLE borrowers (
