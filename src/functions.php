@@ -67,7 +67,7 @@ function get_computers($filters = [])
         )";
     }
 
-    $sql .= " AND deleted_at IS NULL";
+    $sql .= " AND deleted_at IS NULL ORDER BY name ASC";
 
     $result = $conn->query($sql);
     return $result->fetch_all(MYSQLI_ASSOC);
