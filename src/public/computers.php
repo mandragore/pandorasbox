@@ -11,9 +11,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $stmt = $conn->prepare("INSERT INTO computers (name, processor, ram, purchase_date) VALUES (?, ?, ?, ?)");
         $stmt->bind_param("ssss", $name, $proc, $ram, $date);
-        $stmt->execute();
+    } elseif (isset($_POST['action']) && $_POST['action'] === 'delete') {
+        $id = $_POST['id'];
+        try {
+            $stmt = $conn->prepare("DELETE FROM computers WHERE id = ?");
+            $stmt->bind_param("i", $id);
+            $stmt->execute();
+        } catch (mysqli_sql_exception $e) {
+            $error = "Cannot delete computer. It likely has associated loans.";
+        }
     }
-    // Delete action could be added here
 }
 
 // Filters
@@ -112,6 +119,7 @@ $computers = get_computers($filters);
                     <th>Specs (CPU/RAM)</th>
                     <th>Age</th>
                     <th>Status</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -125,6 +133,15 @@ $computers = get_computers($filters);
                         </td>
                         <td><?php echo calculate_age($pc['purchase_date']); ?></td>
                         <td><?php echo strtoupper($pc['status']); ?></td>
+                        <td>
+                            <form method="POST" style="display:inline;"
+                                onsubmit="return confirm('Are you sure you want to delete this computer?');">
+                                <input type="hidden" name="action" value="delete">
+                                <input type="hidden" name="id" value="<?php echo $pc['id']; ?>">
+                                <button type="submit"
+                                    style="background-color: #dc3545; color: white; padding: 5px 10px; border:none; cursor:pointer;">X</button>
+                            </form>
+                        </td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
