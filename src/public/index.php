@@ -6,6 +6,32 @@ $has_late = count($late_loans) > 0;
 $year = isset($_GET['year']) ? (int) $_GET['year'] : (int) date('Y');
 $matrix = get_allocation_matrix($year);
 
+// Calculate Month Headers
+$months = [];
+$current_month = null;
+$colspan = 0;
+for ($w = 1; $w <= 52; $w++) {
+    $dto = new DateTime();
+    $dto->setISODate($year, $w);
+    // ISO-8601: month of the week is determined by the Thursday
+    $thursday = clone $dto;
+    $thursday->modify('+3 days');
+    $m = $thursday->format('M');
+
+    if ($m !== $current_month) {
+        if ($current_month !== null) {
+            $months[] = ['name' => $current_month, 'colspan' => $colspan];
+        }
+        $current_month = $m;
+        $colspan = 1;
+    } else {
+        $colspan++;
+    }
+}
+// Add last month
+if ($current_month !== null) {
+    $months[] = ['name' => $current_month, 'colspan' => $colspan];
+}
 // Stats
 $active_result = $conn->query("SELECT COUNT(*) as c FROM loans WHERE is_returned = 0");
 $active_count = $active_result->fetch_assoc()['c'];
@@ -77,7 +103,15 @@ $available_count = $total_pcs - $active_count;
                 <table class="matrix-table">
                     <thead>
                         <tr>
-                            <th class="pc-col">Computer</th>
+                            <th class="pc-col" rowspan="2">Computer</th>
+                            <?php foreach ($months as $m): ?>
+                                <th colspan="<?php echo $m['colspan']; ?>"
+                                    style="text-align:center; background-color: #f0f0f0; border-bottom: 1px solid #ddd;">
+                                    <?php echo $m['name']; ?>
+                                </th>
+                            <?php endforeach; ?>
+                        </tr>
+                        <tr>
                             <?php for ($w = 1; $w <= 52; $w++): ?>
                                 <th title="Week <?php echo $w; ?>"><?php echo $w; ?></th>
                             <?php endfor; ?>
