@@ -33,7 +33,7 @@ if ($current_month !== null) {
     $months[] = ['name' => $current_month, 'colspan' => $colspan];
 }
 // Stats
-$active_result = $conn->query("SELECT COUNT(*) as c FROM loans WHERE is_returned = 0");
+$active_result = $conn->query("SELECT COUNT(*) as c FROM loans WHERE is_returned = 0 AND start_date <= CURRENT_DATE()");
 $active_count = $active_result->fetch_assoc()['c'];
 
 $total_pcs_res = $conn->query("SELECT COUNT(*) as c FROM computers WHERE status = 'available' AND deleted_at IS NULL");
