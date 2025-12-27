@@ -1,4 +1,15 @@
 <?php
+
+// Basic Authentication
+$valid_user = 'adminpandora';
+$valid_pass = 'XHfsEJMKQJluEvUi';
+
+if (!isset($_SERVER['PHP_AUTH_USER']) || $_SERVER['PHP_AUTH_USER'] !== $valid_user || $_SERVER['PHP_AUTH_PW'] !== $valid_pass) {
+    header('WWW-Authenticate: Basic realm="Pandore Restricted Area"');
+    header('HTTP/1.0 401 Unauthorized');
+    die('Unauthorized Access');
+}
+
 require_once 'db.php';
 
 function get_weeks_in_year($year)
