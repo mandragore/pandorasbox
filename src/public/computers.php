@@ -111,7 +111,7 @@ $computers = get_computers($filters);
             <form method="POST">
                 <input type="hidden" name="action" value="add">
                 <input type="text" name="name" placeholder="Computer Name" required>
-                <input type="text" name="processor" placeholder="Processor">
+                <input type="text" name="processor" placeholder="Hardware">
                 <input type="text" name="ram" placeholder="RAM">
                 <input type="date" name="purchase_date" required>
                 <button type="submit">ADD UNIT</button>

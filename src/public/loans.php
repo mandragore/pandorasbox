@@ -261,7 +261,9 @@ $borrowers = get_borrowers();
                             $selected = ($edit_loan && $edit_loan['computer_id'] == $pc['id']) || (!$edit_loan && $pre_comp == $pc['id']) ? 'selected' : '';
                             ?>
                             <option value="<?php echo $pc['id']; ?>" <?php echo $selected; ?>><?php echo $pc['name']; ?>
-                                (<?php echo $pc['processor']; ?>)</option>
+                                (<?php echo $pc['processor']; ?>) -
+                     <?php echo calculate_age($pc['purchase_date']); ?>
+                            </option>
                         <?php endforeach; ?>
                     </select>
                 </div>
