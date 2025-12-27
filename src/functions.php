@@ -59,6 +59,8 @@ function get_computers($filters = [])
         )";
     }
 
+    $sql .= " AND deleted_at IS NULL";
+
     $result = $conn->query($sql);
     return $result->fetch_all(MYSQLI_ASSOC);
 }

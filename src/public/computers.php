@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif (isset($_POST['action']) && $_POST['action'] === 'delete') {
         $id = $_POST['id'];
         try {
-            $stmt = $conn->prepare("DELETE FROM computers WHERE id = ?");
+            $stmt = $conn->prepare("UPDATE computers SET deleted_at = NOW() WHERE id = ?");
             $stmt->bind_param("i", $id);
             $stmt->execute();
         } catch (mysqli_sql_exception $e) {
