@@ -65,10 +65,18 @@ function get_computers($filters = [])
     return $result->fetch_all(MYSQLI_ASSOC);
 }
 
-function get_borrowers()
+function get_borrowers($search = '')
 {
     global $conn;
-    $result = $conn->query("SELECT * FROM borrowers ORDER BY name");
+    if ($search) {
+        $term = "%" . $search . "%";
+        $stmt = $conn->prepare("SELECT * FROM borrowers WHERE name LIKE ? ORDER BY name");
+        $stmt->bind_param("s", $term);
+        $stmt->execute();
+        $result = $stmt->get_result();
+    } else {
+        $result = $conn->query("SELECT * FROM borrowers ORDER BY name");
+    }
     return $result->fetch_all(MYSQLI_ASSOC);
 }
 

@@ -1,6 +1,14 @@
 <?php
 require_once '../functions.php';
 
+if (isset($_GET['ajax_search'])) {
+    $search = $_GET['ajax_search'];
+    $results = get_borrowers($search);
+    header('Content-Type: application/json');
+    echo json_encode($results);
+    exit;
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['action']) && $_POST['action'] === 'add') {
         $name = $_POST['name'];
@@ -47,7 +55,11 @@ $borrowers = get_borrowers();
         </div>
 
         <div class="card">
-            <h3>Registered Borrowers</h3>
+            <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h3 style="margin:0;">Registered Borrowers</h3>
+                <input type="text" id="search_borrower" placeholder="Search..."
+                    style="padding: 8px; width: 250px; border: 1px solid #ccc; border-radius: 4px;">
+            </div>
             <table>
                 <thead>
                     <tr>
@@ -72,6 +84,52 @@ $borrowers = get_borrowers();
             </table>
         </div>
     </div>
+
+    <script>
+        const searchInput = document.getElementById('search_borrower');
+        const tbody = document.querySelector('tbody');
+
+        function escapeHtml(text) {
+            if (text == null) return '';
+            return process(text.toString());
+        }
+
+        function process(str) {
+            var div = document.createElement('div');
+            div.appendChild(document.createTextNode(str));
+            return div.innerHTML;
+        }
+
+        searchInput.addEventListener('keyup', (e) => {
+            const term = e.target.value;
+            fetch('borrowers.php?ajax_search=' + encodeURIComponent(term))
+                .then(response => response.json())
+                .then(data => {
+                    tbody.innerHTML = '';
+                    if (data.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No borrowers found</td></tr>';
+                        return;
+                    }
+                    data.forEach(b => {
+                        let referrer = b.referrer ? b.referrer : '-';
+                        // Handle potential nulls safely
+                        let name = b.name || '';
+                        let email = b.email || '';
+                        let site = b.site || '';
+
+                        let html = `<tr>
+                            <td>#${b.id}</td>
+                            <td>${escapeHtml(name)}</td>
+                            <td>${escapeHtml(email)}</td>
+                            <td>${escapeHtml(site)}</td>
+                            <td>${escapeHtml(referrer)}</td>
+                        </tr>`;
+                        tbody.innerHTML += html;
+                    });
+                })
+                .catch(err => console.error(err));
+        });
+    </script>
 </body>
 
 </html>
