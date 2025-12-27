@@ -1,0 +1,17 @@
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <!-- Box Body (Blue) -->
+  <path d="M12 24 L32 34 L52 24 L32 14 Z" fill="#0056b3" /> <!-- Top Inner (Darker) -->
+  <path d="M12 24 L12 44 L32 54 L32 34 Z" fill="#007bff" /> <!-- Left Face -->
+  <path d="M52 24 L52 44 L32 54 L32 34 Z" fill="#0069d9" /> <!-- Right Face -->
+  
+  <!-- Lid (Open) -->
+  <path d="M12 24 L32 14 L52 24 L32 34 Z" fill="#ffffff" fill-opacity="0.2" />
+  
+  <!-- Hope / Light Rays -->
+  <path d="M32 24 L16 10" stroke="#ffc107" stroke-width="2" stroke-linecap="round" />
+  <path d="M32 24 L32 6" stroke="#ffc107" stroke-width="2" stroke-linecap="round" />
+  <path d="M32 24 L48 10" stroke="#ffc107" stroke-width="2" stroke-linecap="round" />
+  
+  <!-- Keyhole -->
+  <circle cx="22" cy="39" r="2" fill="#ffffff" />
+</svg>
