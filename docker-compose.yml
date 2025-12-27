@@ -9,19 +9,19 @@ services:
       - db
     environment:
       - DB_HOST=db
-      - DB_USER=user
-      - DB_PASS=password
-      - DB_NAME=loan_manager
+      - DB_USER=${MYSQL_USER}
+      - DB_PASS=${MYSQL_PASSWORD}
+      - DB_NAME=${MYSQL_DATABASE}
       - AUTH_USER=${AUTH_USER}
       - AUTH_PASS=${AUTH_PASS}
 
   db:
     image: mariadb:10.5
     environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=loan_manager
-      - MYSQL_USER=user
-      - MYSQL_PASSWORD=password
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
     volumes:
       - db_data:/var/lib/mysql
       - ./docker/sql:/docker-entrypoint-initdb.d

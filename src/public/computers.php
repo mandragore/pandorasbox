@@ -11,6 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $stmt = $conn->prepare("INSERT INTO computers (name, processor, ram, purchase_date) VALUES (?, ?, ?, ?)");
         $stmt->bind_param("ssss", $name, $proc, $ram, $date);
+        $stmt->execute();
     } elseif (isset($_POST['action']) && $_POST['action'] === 'delete') {
         $id = $_POST['id'];
         try {
@@ -46,6 +47,12 @@ $computers = get_computers($filters);
     <div class="scanlines"></div>
     <div class="container">
         <?php include "header.php"; ?>
+
+        <?php if (isset($error)): ?>
+            <div class="card alert" style="background-color: #f8d7da; color: #721c24; border-color: #f5c6cb;">
+                <?php echo $error; ?>
+            </div>
+        <?php endif; ?>
 
         <div class="card">
             <h3>Search Availability</h3>
