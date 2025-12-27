@@ -12,6 +12,8 @@ services:
       - DB_USER=user
       - DB_PASS=password
       - DB_NAME=loan_manager
+      - AUTH_USER=${AUTH_USER}
+      - AUTH_PASS=${AUTH_PASS}
 
   db:
     image: mariadb:10.5

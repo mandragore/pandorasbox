@@ -1,8 +1,14 @@
 <?php
 
 // Basic Authentication
-$valid_user = 'adminpandora';
-$valid_pass = 'XHfsEJMKQJluEvUi';
+$valid_user = getenv('AUTH_USER');
+$valid_pass = getenv('AUTH_PASS');
+
+if (!$valid_user || !$valid_pass) {
+    // Fallback or error if env not set
+    // For safety, default to secure/random or just fail
+    die('Configuration Error: Auth credentials not set.');
+}
 
 if (!isset($_SERVER['PHP_AUTH_USER']) || $_SERVER['PHP_AUTH_USER'] !== $valid_user || $_SERVER['PHP_AUTH_PW'] !== $valid_pass) {
     header('WWW-Authenticate: Basic realm="Pandore Restricted Area"');
