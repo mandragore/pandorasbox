@@ -38,7 +38,7 @@ $computers = get_computers($filters);
 
 <head>
     <meta charset="UTF-8">
-    <title>Inventory - Retro Loan</title>
+    <title>Inventory - Pandora's Box</title>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/svg+xml" href="logo.svg">
 </head>

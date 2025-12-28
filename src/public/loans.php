@@ -133,7 +133,7 @@ $borrowers = get_borrowers();
 
 <head>
     <meta charset="UTF-8">
-    <title>Loans - Loan Manager</title>
+    <title>Loans - Pandora's Box</title>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/svg+xml" href="logo.svg">
 </head>

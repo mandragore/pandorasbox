@@ -45,7 +45,7 @@ $available_count = $total_pcs - $active_count;
 
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard - Loan Manager</title>
+    <title>Dashboard - Pandora's Box</title>
     <link rel="stylesheet" href="style.css">
     <style>
         /* Specific tweaks for dashboard */

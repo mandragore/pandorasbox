@@ -29,7 +29,7 @@ $borrowers = get_borrowers();
 
 <head>
     <meta charset="UTF-8">
-    <title>Borrowers - Loan Manager</title>
+    <title>Borrowers - Pandora's Box</title>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/svg+xml" href="logo.svg">
 </head>
