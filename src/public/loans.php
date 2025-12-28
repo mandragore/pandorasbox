@@ -213,6 +213,7 @@ $borrowers = get_borrowers();
                         const currentEnd = urlParams.get('end_date');
 
                         if (start && end && (start !== currentStart || end !== currentEnd)) {
+                            if (end <= start) return;
                             // Reload with new params
                             urlParams.set('start_date', start);
                             urlParams.set('end_date', end);
@@ -262,7 +263,7 @@ $borrowers = get_borrowers();
                             ?>
                             <option value="<?php echo $pc['id']; ?>" <?php echo $selected; ?>><?php echo $pc['name']; ?>
                                 (<?php echo $pc['processor']; ?>) -
-                     <?php echo calculate_age($pc['purchase_date']); ?>
+                                <?php echo calculate_age($pc['purchase_date']); ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
