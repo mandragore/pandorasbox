@@ -14,6 +14,7 @@ services:
       - DB_NAME=${MYSQL_DATABASE}
       - AUTH_USER=${AUTH_USER}
       - AUTH_PASS=${AUTH_PASS}
+    restart: unless-stopped
 
   db:
     image: mariadb:10.5
@@ -25,6 +26,7 @@ services:
     volumes:
       - db_data:/var/lib/mysql
       - ./docker/sql:/docker-entrypoint-initdb.d
+    restart: unless-stopped
 
 volumes:
   db_data:

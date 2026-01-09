@@ -12,6 +12,67 @@
     --border-color: #dee2e6;
     --shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
     --input-bg: #ffffff;
+    --header-bg: #ffffff;
+    --table-header-bg: #f8f9fa;
+    --table-cell-bg: #ffffff;
+    --muted-text: #666;
+    --nav-link-color: #555;
+    --h3-color: #495057;
+}
+
+/* Dark Theme */
+[data-theme="dark"] {
+    --bg-color: #1a1d23;
+    --text-color: #e4e6eb;
+    --primary-color: #4dabf7;
+    --primary-hover: #74c0fc;
+    --success-color: #51cf66;
+    --danger-color: #ff6b6b;
+    --panel-bg: #242832;
+    --border-color: #3d4451;
+    --shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    --input-bg: #2d323c;
+    --header-bg: #242832;
+    --table-header-bg: #2d323c;
+    --table-cell-bg: #242832;
+    --muted-text: #adb5bd;
+    --nav-link-color: #ced4da;
+    --h3-color: #ced4da;
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    margin-left: 15px;
+}
+
+.theme-toggle:hover {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+    transform: rotate(15deg);
+}
+
+/* Smooth transition for theme change */
+body,
+header,
+.card,
+.nav a,
+input,
+select,
+table,
+th,
+td {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
 body {
@@ -39,7 +100,7 @@ h1 {
 
 h3 {
     font-size: 1.1rem;
-    color: #495057;
+    color: var(--h3-color);
     margin-bottom: 0.5rem;
 }
 
@@ -62,9 +123,9 @@ a:hover {
 }
 
 header {
-    background: #fff;
+    background: var(--header-bg);
     border-bottom: none;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow);
     margin-bottom: 1rem;
     display: flex;
     justify-content: space-between;
@@ -79,7 +140,7 @@ header h1 {
 
 .nav a {
     margin-left: 15px;
-    color: #555;
+    color: var(--nav-link-color);
     font-weight: 500;
     font-size: 0.9rem;
 }
@@ -133,8 +194,8 @@ td {
 }
 
 th {
-    background-color: #f8f9fa;
-    color: #333;
+    background-color: var(--table-header-bg);
+    color: var(--text-color);
     border-bottom: 2px solid var(--border-color);
 }
 
@@ -212,6 +273,7 @@ button:hover {
 
 .matrix-table th.pc-col {
     width: 150px;
+    background: var(--table-header-bg);
     min-width: 150px;
     position: sticky;
     left: 0;
@@ -225,7 +287,7 @@ button:hover {
 .matrix-table td.pc-col {
     position: sticky;
     left: 0;
-    background: #fff;
+    background: var(--table-cell-bg);
     z-index: 10;
     text-align: left;
     padding-left: 10px;
