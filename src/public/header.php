@@ -10,7 +10,7 @@
         <a href="index.php">📊 Dashboard</a>
         <a href="computers.php">💻 Inventory</a>
         <a href="borrowers.php">👥 Borrowers</a>
-        <a href="loans.php">🗓️ Loans</a>&nbsp;
+        <a href="loans.php">🗓️ Loans</a>
         <button id="theme-toggle" class="theme-toggle" title="Basculer le thème">🌙</button>
     </nav>
 </header>
