@@ -119,6 +119,28 @@ function get_late_loans()
     return $result->fetch_all(MYSQLI_ASSOC);
 }
 
+function get_overlapping_loans()
+{
+    global $conn;
+    $sql = "SELECT 
+                l1.id as loan1_id, l1.start_date as loan1_start, l1.end_date as loan1_end,
+                l2.id as loan2_id, l2.start_date as loan2_start, l2.end_date as loan2_end,
+                c.name as computer_name, c.id as computer_id,
+                b1.name as borrower1_name, b2.name as borrower2_name
+            FROM loans l1
+            JOIN loans l2 ON l1.computer_id = l2.computer_id 
+                AND l1.id < l2.id
+                AND l1.start_date <= l2.end_date 
+                AND l1.end_date >= l2.start_date
+            JOIN computers c ON l1.computer_id = c.id
+            LEFT JOIN borrowers b1 ON l1.borrower_id = b1.id
+            LEFT JOIN borrowers b2 ON l2.borrower_id = b2.id
+            WHERE l1.is_returned = 0 AND l2.is_returned = 0
+            ORDER BY c.name, l1.start_date";
+    $result = $conn->query($sql);
+    return $result->fetch_all(MYSQLI_ASSOC);
+}
+
 function get_allocation_matrix($year)
 {
     global $conn;

@@ -3,6 +3,8 @@ require_once '../functions.php';
 
 $late_loans = get_late_loans();
 $has_late = count($late_loans) > 0;
+$overlapping_loans = get_overlapping_loans();
+$has_overlapping = count($overlapping_loans) > 0;
 $year = isset($_GET['year']) ? (int) $_GET['year'] : (int) date('Y');
 $matrix = get_allocation_matrix($year);
 
@@ -69,6 +71,39 @@ $available_count = $total_pcs - $active_count - $late_count;
                 <h3>⚠️ Late Returns Alert</h3>
                 <p><?php echo count($late_loans); ?> loan(s) are overdue. Check the <a href="loans.php"
                         style="color:inherit; text-decoration:underline;">Loans</a> page.</p>
+            </div>
+        <?php endif; ?>
+
+        <?php if ($has_overlapping): ?>
+            <div class="card" style="background-color: #f8d7da; border-color: #f5c6cb;">
+                <h3 style="color: #721c24;">🔀 Overlapping Loans Detected</h3>
+                <p style="color: #721c24; margin-bottom: 10px;"><?php echo count($overlapping_loans); ?> conflict(s) found:</p>
+                <table style="font-size: 0.85rem;">
+                    <thead>
+                        <tr style="background-color: rgba(0,0,0,0.05);">
+                            <th>Computer</th>
+                            <th>Loan #1</th>
+                            <th>Loan #2</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($overlapping_loans as $overlap): ?>
+                            <tr>
+                                <td><strong><?php echo htmlspecialchars($overlap['computer_name']); ?></strong></td>
+                                <td>
+                                    <a href="loans.php?edit_id=<?php echo $overlap['loan1_id']; ?>">#<?php echo $overlap['loan1_id']; ?></a>
+                                    <?php echo htmlspecialchars($overlap['borrower1_name'] ?? 'Unknown'); ?>
+                                    <br><small><?php echo $overlap['loan1_start']; ?> → <?php echo $overlap['loan1_end']; ?></small>
+                                </td>
+                                <td>
+                                    <a href="loans.php?edit_id=<?php echo $overlap['loan2_id']; ?>">#<?php echo $overlap['loan2_id']; ?></a>
+                                    <?php echo htmlspecialchars($overlap['borrower2_name'] ?? 'Unknown'); ?>
+                                    <br><small><?php echo $overlap['loan2_start']; ?> → <?php echo $overlap['loan2_end']; ?></small>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
             </div>
         <?php endif; ?>
 
