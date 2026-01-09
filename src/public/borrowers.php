@@ -20,6 +20,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bind_param("ssss", $name, $email, $site, $referrer);
         $stmt->execute();
     }
+    
+    if (isset($_POST['action']) && $_POST['action'] === 'delete') {
+        $id = (int) $_POST['id'];
+        $stmt = $conn->prepare("UPDATE borrowers SET deleted_at = NOW() WHERE id = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+    }
 }
 
 $borrowers = get_borrowers();
@@ -84,6 +91,11 @@ $borrowers = get_borrowers();
                                     <button
                                         style="background-color: #ffc107; color: black; padding: 5px 10px; border:none; cursor:pointer;">Edit</button>
                                 </a>
+                                <form method="POST" style="display: inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet emprunteur ?');">
+                                    <input type="hidden" name="action" value="delete">
+                                    <input type="hidden" name="id" value="<?php echo $b['id']; ?>">
+                                    <button type="submit" style="background-color: #dc3545; color: white; padding: 5px 10px; border:none; cursor:pointer;">Delete</button>
+                                </form>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -134,6 +146,11 @@ $borrowers = get_borrowers();
                                 <a href="edit_borrower.php?id=${b.id}">
                                     <button style="background-color: #ffc107; color: black; padding: 5px 10px; border:none; cursor:pointer;">Edit</button>
                                 </a>
+                                <form method="POST" style="display: inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet emprunteur ?');">
+                                    <input type="hidden" name="action" value="delete">
+                                    <input type="hidden" name="id" value="${b.id}">
+                                    <button type="submit" style="background-color: #dc3545; color: white; padding: 5px 10px; border:none; cursor:pointer;">Delete</button>
+                                </form>
                             </td>
                         </tr>`;
                         tbody.innerHTML += html;

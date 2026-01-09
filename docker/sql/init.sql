@@ -13,7 +13,8 @@ CREATE TABLE borrowers (
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255),
     site VARCHAR(100),
-    referrer VARCHAR(255)
+    referrer VARCHAR(255),
+    deleted_at DATETIME NULL DEFAULT NULL
 );
 
 CREATE TABLE loans (

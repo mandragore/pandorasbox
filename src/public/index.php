@@ -38,7 +38,8 @@ $active_count = $active_result->fetch_assoc()['c'];
 
 $total_pcs_res = $conn->query("SELECT COUNT(*) as c FROM computers WHERE status = 'available' AND deleted_at IS NULL");
 $total_pcs = $total_pcs_res->fetch_assoc()['c'];
-$available_count = $total_pcs - $active_count;
+$late_count = count($late_loans);
+$available_count = $total_pcs - $active_count - $late_count;
 ?>
 <!DOCTYPE html>
 <html lang="en">

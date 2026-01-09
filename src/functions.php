@@ -87,12 +87,12 @@ function get_borrowers($search = '')
     global $conn;
     if ($search) {
         $term = "%" . $search . "%";
-        $stmt = $conn->prepare("SELECT * FROM borrowers WHERE name LIKE ? ORDER BY name");
+        $stmt = $conn->prepare("SELECT * FROM borrowers WHERE name LIKE ? AND deleted_at IS NULL ORDER BY name");
         $stmt->bind_param("s", $term);
         $stmt->execute();
         $result = $stmt->get_result();
     } else {
-        $result = $conn->query("SELECT * FROM borrowers ORDER BY name");
+        $result = $conn->query("SELECT * FROM borrowers WHERE deleted_at IS NULL ORDER BY name");
     }
     return $result->fetch_all(MYSQLI_ASSOC);
 }

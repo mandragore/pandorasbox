@@ -150,7 +150,7 @@ $computers = get_computers($filters);
                                         style="background-color: #ffc107; color: black; padding: 5px 10px; border:none; cursor:pointer; margin-right: 5px;">Edit</button>
                                 </a>
                                 <button type="submit"
-                                    style="background-color: #dc3545; color: white; padding: 5px 10px; border:none; cursor:pointer;">X</button>
+                                    style="background-color: #dc3545; color: white; padding: 5px 10px; border:none; cursor:pointer;">Delete</button>
                             </form>
                         </td>
                     </tr>
